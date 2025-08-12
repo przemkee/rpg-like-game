@@ -5,13 +5,16 @@ import { MenuScene } from './ui/menu';
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: 'game',
-  width: 960,
-  height: 544,
   pixelArt: true,
   roundPixels: true,
   backgroundColor: '#000000',
   scene: [MenuScene, GameScene],
   physics: { default: 'arcade' },
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    width: window.innerWidth,
+    height: window.innerHeight,
+  },
 };
 
 export const game = new Phaser.Game(config);
