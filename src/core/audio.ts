@@ -1,16 +1,21 @@
 export class AudioManager {
   private scene: Phaser.Scene;
-  private ctx: AudioContext;
+  private ctx?: AudioContext;
   private musicOsc?: OscillatorNode;
   sfxVolume = 1;
   musicVolume = 1;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
-    this.ctx = scene.sound.context as AudioContext;
+    // Some browsers or environments might not initialise a Web Audio
+    // context until after a user interaction.  Accessing it eagerly can
+    // throw errors and prevent the game from rendering.  Guard against
+    // the context being missing so the game still runs even without audio.
+    this.ctx = scene.sound.context as AudioContext | undefined | null;
   }
 
   playSfx(): void {
+    if (!this.ctx) return;
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = 'square';
@@ -22,6 +27,7 @@ export class AudioManager {
   }
 
   playMusic(): void {
+    if (!this.ctx) return;
     if (this.musicOsc) this.musicOsc.stop();
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
