@@ -38,4 +38,8 @@ export class FogOfWar {
     gv.destroy();
     g.destroy();
   }
+
+  setEnabled(enabled: boolean): void {
+    this.rt.setVisible(enabled);
+  }
 }

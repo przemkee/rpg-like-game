@@ -29,6 +29,7 @@ export class GameScene extends Phaser.Scene {
   private projGraphics!: Phaser.GameObjects.Graphics;
   private remembered = new Set<string>();
   private showSeed = false;
+  private fogEnabled = true;
 
   constructor() {
     super('game');
@@ -36,7 +37,8 @@ export class GameScene extends Phaser.Scene {
 
   preload(): void {}
 
-  create(): void {
+  create(data: { fog?: boolean } = {}): void {
+    this.fogEnabled = data.fog ?? true;
     const px = this.add.graphics();
     px.fillStyle(0xffffff);
     px.fillRect(0, 0, 1, 1);
@@ -70,6 +72,7 @@ export class GameScene extends Phaser.Scene {
     this.hud = new HUD(this, WIDTH * TILE);
     this.projectiles = new ProjectilePool(32);
     this.fog = new FogOfWar(this, WIDTH, HEIGHT, TILE);
+    this.fog.setEnabled(this.fogEnabled);
     this.projGraphics = this.add.graphics();
 
     this.input.keyboard.on(
@@ -157,7 +160,9 @@ export class GameScene extends Phaser.Scene {
       7,
       this.remembered,
     );
-    this.fog.draw(visible, remembered);
+    if (this.fogEnabled) {
+      this.fog.draw(visible, remembered);
+    }
     this.hud.update(
       this.player.stats.hp,
       this.level.depth,
